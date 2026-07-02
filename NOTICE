@@ -1,0 +1,18 @@
+Ditto — third-party components and attributions
+================================================
+
+Ditto is MIT-licensed (see LICENSE). It bundles and builds on the following
+MIT-licensed projects.
+
+1. web-clone methodology skill — Jane-xiaoer
+   The scripts under `scripts/` and the reference docs under `references/`
+   (except `BRAND_TOKENS.md` and `higgsfield-3d-route.md`, which are original to
+   Ditto) are vendored from this project. The original MIT license text is
+   preserved at `references/LICENSE-web-clone-jane`.
+   Source: https://github.com/Jane-xiaoer/claude-skill-web-clone
+
+2. ai-website-cloner-template — JCodesMore
+   The parallel-builder-dispatch methodology (spec-per-section → agents in
+   worktrees → sequential merge) described in SKILL.md is adapted from this
+   template. No code is vendored; the pattern is credited.
+   Source: https://github.com/JCodesMore/ai-website-cloner-template

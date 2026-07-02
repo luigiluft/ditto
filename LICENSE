@@ -19,17 +19,3 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
-
----
-
-Third-party components:
-
-The scripts under `scripts/` and reference docs under `references/` (except
-`BRAND_TOKENS.md` and `higgsfield-3d-route.md`) are vendored from the
-"web-clone" methodology skill by Jane-xiaoer, MIT-licensed. The original
-license text is preserved in `references/LICENSE-web-clone-jane`.
-Original: https://github.com/Jane-xiaoer/claude-skill-web-clone
-
-The parallel-builder-dispatch methodology is adapted from the
-"ai-website-cloner-template" by JCodesMore, MIT-licensed.
-Original: https://github.com/JCodesMore/ai-website-cloner-template
