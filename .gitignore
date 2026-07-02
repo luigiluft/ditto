@@ -1,0 +1,24 @@
+# Node
+node_modules/
+package-lock.json
+npm-debug.log*
+
+# Playwright browsers (resolved at runtime)
+.playwright/
+ms-playwright/
+
+# Clone working artifacts (recon output, mirrored sites, screenshots)
+RECON/
+site/
+_smoke/
+*-recon.json
+mirror-manifest.json
+
+# Your private brand tokens — never commit these
+brand.tokens.json
+*.brand.tokens.json
+references/rebrand-tokens.local.md
+
+# OS
+.DS_Store
+Thumbs.db

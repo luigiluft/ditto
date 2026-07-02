@@ -1,0 +1,31 @@
+{
+  "name": "ditto",
+  "version": "0.1.0",
+  "description": "Clone any website and rebuild it as your own — a Claude Code skill.",
+  "type": "module",
+  "license": "MIT",
+  "author": "Luigi Luft",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/luigiluft/ditto"
+  },
+  "keywords": [
+    "claude-code",
+    "skill",
+    "website-clone",
+    "reverse-engineering",
+    "design-tokens",
+    "webgl",
+    "playwright"
+  ],
+  "scripts": {
+    "recon": "node scripts/recon-site.mjs",
+    "mirror": "node scripts/mirror-site.mjs",
+    "dna": "node scripts/dna-scaffold.mjs",
+    "diff": "node scripts/visual-diff.mjs",
+    "postinstall": "node -e \"console.log('Ditto ready. If Playwright browsers are missing, run: npx playwright install chromium')\""
+  },
+  "devDependencies": {
+    "playwright": "^1.49.0"
+  }
+}
