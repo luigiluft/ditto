@@ -73,7 +73,7 @@ npx cache).
 6. **3D ASSET (our addition)** — if the target uses a proprietary mesh you will NOT
    rip: generate your own equivalent via Higgsfield (image→GLB, ~US$0.86) and apply your
    own material in the engine. Full recipe + gotchas in `references/higgsfield-3d-route.md`.
-7. **VERIFY (gate, not optional)** — recon the local clone and compare:
+7. **VERIFY (DOUBLE gate, not optional)** — static AND motion. Recon the local clone:
    ```
    node scripts/recon-site.mjs --url http://127.0.0.1:<port>/ --out RECON --label clone
    node scripts/visual-diff.mjs --original RECON/screenshots/original-1440.png \
@@ -82,11 +82,20 @@ npx cache).
         --clone RECON/clone-recon.json --out CLONE_REPORT.md
    node scripts/audit-clone.mjs --project . --brand "<target-brand>" --out CLONE_AUDIT.md
    ```
-   `visual-diff` gives `diffPixelRatio` + a 1–5 `visualScore` per breakpoint.
-   `audit-clone` finds tracking (GA/pixels/hotjar) and target-brand residue to strip.
+   `visual-diff` gives `diffPixelRatio` + a 1–5 `visualScore` per breakpoint. But **one
+   static frame is BLIND to animation** (lesson paid on the Apple clone: 3/5 static, zero
+   motion). If recon flagged the target as animated (IO/scroll/transitions), the static
+   gate does NOT close on its own — run the **motion gate**:
+   ```
+   node scripts/motion-probe.mjs --url <original> --out RECON --label original --frames 6
+   node scripts/motion-probe.mjs --url http://127.0.0.1:<port>/ --out RECON --label clone --frames 6
+   # (a) signal parity: clone.animated must match original.animated (IO/scroll/transitions)
+   # (b) per-frame diff: visual-diff each pair RECON/motion/original-fNN.png × clone-fNN.png
+   ```
    **Real-browser verification is mandatory** — never claim "should work"; honestly
-   record what you couldn't verify. Animated WebGL scene: tab IN FOCUS (background rAF
-   freezes).
+   record what you couldn't verify. Animated WebGL scene: tab IN FOCUS (background rAF freezes).
+   > Known gate limit: a naive pixel-diff over-punishes a few-px vertical offset (it shifts
+   > the whole frame). Align frames to a common anchor before diffing when offset is the cause.
 
 ## Parallel builder dispatch (content-site route)
 
@@ -97,6 +106,13 @@ The ai-website-cloner-template pattern, for stage 5 of React/Vue/Next sites:
    model (`static | click | scroll | time`). Multiple states = extract state A → fire
    trigger → extract state B → **diff = the behavior spec**. Save to
    `docs/components/<name>.spec.md` (≤ ~150 lines; over → split the section).
+   - **RENDERED GEOMETRY, not just tokens (lesson paid on the Apple clone).** The asset
+     URL is not enough. For images/heros, capture the *real box*: `getBoundingClientRect`
+     (rendered w/h/top) + `object-fit` + `object-position` + `transform` (Apple shows a
+     3008px hero in a 1440px box with `object-fit:fill` + `translateX(-1504px)` to reveal
+     the *center slice* at 1:1 — `width:100%;max-width:…` squeezes it and kills the asset)
+     + the full `<picture>`/`srcset` (5+ variants; the right one depends on width AND
+     height). Reproduce the BOX, not just the asset. Never eyeball hero layout.
 2. **Builder receives the spec inline** (not "read the file") + screenshot path + shared
    imports (`icons.tsx`, `cn()`, primitives). Run in a worktree, `npx tsc --noEmit`
    before finishing. Complex (3+ subcomponents) = 1 agent per subcomponent + 1 wrapper.
@@ -129,6 +145,9 @@ in `references/BRAND_TOKENS.md`.
 - Don't rip the target's proprietary 3D mesh (obscure, slow, copyright) — use stage 6.
 - Don't copy backend/auth/payment — a clone is a read-only replica of the presentation layer.
 - Don't claim success without the verify gate run. Don't implement GUESS-level code.
+- **A STATIC clone of an ANIMATED site = INCOMPLETE**, not 1:1. If recon finds IO/scroll/
+  transitions, a still screenshot proves nothing — run the motion gate (stage 7).
+- Don't eyeball hero geometry — extract the rendered box (stage 5, geometry item).
 - A site from scratch with NO reference → not here; use a design skill.
 
 ## Vendored scripts (MIT, from web-clone — `references/LICENSE-web-clone-jane`)
@@ -138,3 +157,7 @@ in `references/BRAND_TOKENS.md`.
 `audit-clone` · `init-clone` (+ portable `lib/playwright-loader`). Complex-route detail
 (L4–L6) in `references/complex-playbooks.md`; delivery templates (NOTES/TEARDOWN/REPORT)
 in `references/deliverables.md`.
+
+**Ditto additions** (not vendored): `motion-probe` (scroll-timeline capture + IO/scroll/
+transition detection for the motion gate) · the 3D-asset route (`references/higgsfield-3d-route.md`)
+· rebrand mode (`references/BRAND_TOKENS.md`).
