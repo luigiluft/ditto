@@ -92,6 +92,12 @@ npx cache).
    # (a) signal parity: clone.animated must match original.animated (IO/scroll/transitions)
    # (b) per-frame diff: visual-diff each pair RECON/motion/original-fNN.png × clone-fNN.png
    ```
+   **Before reconstructing any motion, enumerate what the target ACTUALLY animates** with
+   `anim-inventory.mjs` (instruments `Element.animate` + `transitionrun` during a full scroll,
+   lists every real animation with its spec). Lesson paid on apple.com: its product tiles are
+   STATIC — only the gallery carousel + hovers animate. A reconstructed clone that reveals
+   those tiles INVENTED motion the original lacks. Rule: if an element isn't in the inventory,
+   it's static — don't invent a reveal. `node scripts/anim-inventory.mjs --url <url> [--hover]`.
    For **animation 1:1** (easing/timing, not just "does it move"), use `anim-verify.mjs`:
    deterministic WAAPI seek (`getAnimations()`→`currentTime=t`) samples the motion CURVE on
    both sides and compares trajectory + real timing. Catches a wrong easing that a static
@@ -176,6 +182,7 @@ in `references/deliverables.md`.
 
 **Ditto additions** (not vendored): `motion-probe` (scroll-timeline capture + IO/scroll/
 transition detection for the motion gate) · `align-diff` (auto-aligns two screenshots
-vertically before diffing — kills the offset false-positive) · `anim-verify` (deterministic
+vertically before diffing — kills the offset false-positive) · `anim-inventory` (enumerates
+what a site really animates so you don't invent motion) · `anim-verify` (deterministic
 WAAPI-seek motion-curve compare — validates easing/timing 1:1, not just endpoints) · the
 3D-asset route (`references/higgsfield-3d-route.md`) · rebrand mode (`references/BRAND_TOKENS.md`).
