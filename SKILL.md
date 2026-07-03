@@ -96,11 +96,15 @@ npx cache).
    record what you couldn't verify. Animated WebGL scene: tab IN FOCUS (background rAF freezes).
    - **ALIGN BEFORE DIFFING (3rd lesson, proven on the Apple mirror).** `visual-diff` is a raw
      pixel compare: a few-px vertical offset (a geo banner present on only one side, a spacer)
-     shifts the WHOLE frame and inflates the diff — a 1:1 mirror of apple.com scored 15.2%
-     purely from a 70px banner. **Fix:** screenshot both with a `clip` starting at a common
-     ANCHOR (each side's `<nav>`: `clip:{x:0,y:navTop,width,height:H}`), same height. Nav-
-     anchored, that same mirror scored **1.0% / 4.5-of-5**. High diff + matching content =
-     an alignment problem, not a fidelity problem — anchor and re-measure before concluding.
+     shifts the WHOLE frame and inflates the diff — a 1:1 mirror of apple.com scored 15-25%
+     purely from a 70px banner. **Automated fix — `align-diff.mjs`** (sweeps vertical offsets,
+     picks the one that minimizes the diff, reports aligned score + the offset it found):
+     ```
+     node scripts/align-diff.mjs --original RECON/original-1440.png --clone RECON/clone-1440.png --out RECON/align.json
+     ```
+     On apple.com it auto-recovered **25.6% → 1.0% @ 70px (4.5-of-5)**. High diff + matching
+     content = an alignment problem, not a fidelity problem — run `align-diff` before
+     concluding. (Manual alternative: `clip:{x:0,y:navTop,...}` anchoring the `<nav>`.)
 
 ## Parallel builder dispatch (content-site route)
 
@@ -164,5 +168,6 @@ in `references/BRAND_TOKENS.md`.
 in `references/deliverables.md`.
 
 **Ditto additions** (not vendored): `motion-probe` (scroll-timeline capture + IO/scroll/
-transition detection for the motion gate) · the 3D-asset route (`references/higgsfield-3d-route.md`)
-· rebrand mode (`references/BRAND_TOKENS.md`).
+transition detection for the motion gate) · `align-diff` (auto-aligns two screenshots
+vertically before diffing — kills the offset false-positive) · the 3D-asset route
+(`references/higgsfield-3d-route.md`) · rebrand mode (`references/BRAND_TOKENS.md`).
