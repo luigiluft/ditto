@@ -94,8 +94,13 @@ npx cache).
    ```
    **Real-browser verification is mandatory** — never claim "should work"; honestly
    record what you couldn't verify. Animated WebGL scene: tab IN FOCUS (background rAF freezes).
-   > Known gate limit: a naive pixel-diff over-punishes a few-px vertical offset (it shifts
-   > the whole frame). Align frames to a common anchor before diffing when offset is the cause.
+   - **ALIGN BEFORE DIFFING (3rd lesson, proven on the Apple mirror).** `visual-diff` is a raw
+     pixel compare: a few-px vertical offset (a geo banner present on only one side, a spacer)
+     shifts the WHOLE frame and inflates the diff — a 1:1 mirror of apple.com scored 15.2%
+     purely from a 70px banner. **Fix:** screenshot both with a `clip` starting at a common
+     ANCHOR (each side's `<nav>`: `clip:{x:0,y:navTop,width,height:H}`), same height. Nav-
+     anchored, that same mirror scored **1.0% / 4.5-of-5**. High diff + matching content =
+     an alignment problem, not a fidelity problem — anchor and re-measure before concluding.
 
 ## Parallel builder dispatch (content-site route)
 
