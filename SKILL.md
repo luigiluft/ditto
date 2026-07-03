@@ -92,6 +92,13 @@ npx cache).
    # (a) signal parity: clone.animated must match original.animated (IO/scroll/transitions)
    # (b) per-frame diff: visual-diff each pair RECON/motion/original-fNN.png × clone-fNN.png
    ```
+   For **animation 1:1** (easing/timing, not just "does it move"), use `anim-verify.mjs`:
+   deterministic WAAPI seek (`getAnimations()`→`currentTime=t`) samples the motion CURVE on
+   both sides and compares trajectory + real timing. Catches a wrong easing that a static
+   endpoint diff can't (identical start/end, different journey). See the README proof.
+   ```
+   node scripts/anim-verify.mjs --original <url> --clone <url> --selector "<css>" --trigger-class <cls>
+   ```
    **Real-browser verification is mandatory** — never claim "should work"; honestly
    record what you couldn't verify. Animated WebGL scene: tab IN FOCUS (background rAF freezes).
    - **ALIGN BEFORE DIFFING (3rd lesson, proven on the Apple mirror).** `visual-diff` is a raw
@@ -169,5 +176,6 @@ in `references/deliverables.md`.
 
 **Ditto additions** (not vendored): `motion-probe` (scroll-timeline capture + IO/scroll/
 transition detection for the motion gate) · `align-diff` (auto-aligns two screenshots
-vertically before diffing — kills the offset false-positive) · the 3D-asset route
-(`references/higgsfield-3d-route.md`) · rebrand mode (`references/BRAND_TOKENS.md`).
+vertically before diffing — kills the offset false-positive) · `anim-verify` (deterministic
+WAAPI-seek motion-curve compare — validates easing/timing 1:1, not just endpoints) · the
+3D-asset route (`references/higgsfield-3d-route.md`) · rebrand mode (`references/BRAND_TOKENS.md`).

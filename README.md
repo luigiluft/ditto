@@ -45,6 +45,27 @@ Every technical finding gets an evidence tag:
 
 ---
 
+## Proof: it validates animation, not just pixels
+
+A static screenshot diff is blind to motion. `anim-verify.mjs` proves the **easing curve** is 1:1 — it seeks each animation deterministically via the Web Animations API (`getAnimations()` → `currentTime = t`), samples the `translateY`/`opacity` trajectory over time on both sides, and compares the curve plus the real timing (`duration`, `easing`, `delay`).
+
+Two clones with **identical start and end frames** — a static diff calls them equal:
+
+![anim-verify demo](docs/anim-verify-demo.gif)
+
+The green (original) and blue (good clone) share the same `cubic-bezier(.28,.11,.32,1) .8s`; the red clone uses `linear .4s`. Same endpoints, different journey. Plotting `translateY` over time, the good clone's curve lands exactly on the original and the bad clone's curve diverges:
+
+![anim-verify curve chart](docs/anim-verify-proof.png)
+
+```
+good → MATCH  · curve-err 0.0%  · timing dur ✓ easing ✓
+bad  → DIVERGE · curve-err 10.4% · timing dur ✗ easing ✗
+```
+
+The good clone passes at 0.0% curve error; the bad clone is caught — the wrong easing is invisible to a frame diff but obvious in the curve. Reproduce it: `examples/anim-demo/` + `node scripts/anim-verify.mjs --original ... --clone ... --selector ".card" --trigger-class play`.
+
+---
+
 ## The 7 stages
 
 1. **Source first** — hunt the real code on GitHub before scraping (`gh search`, source-map recovery). Found + license permits → skip straight to rebuild.
